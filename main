@@ -1,16 +1,17 @@
 import re
 
 tokens = [
-    ('Comentario',    r'//.*|#.*'), #pego tudo na linha dps do // ou #
-    ('Literal',       r'\".*?\"|\'.*?\''), #pego o minimo que tem entre aspas duplas ou simples
-    ('Numero',        r'\d+(\.\d+)?'), #inteiro ou com casa decimal '()'
-    ('Palavra_Reservada',  r'\b(break|case|const|continue|do|double|for|long|short|sizeof|static|struct|switch|typedef|void|return|if|else|int|float|char|string|while|printf)\b'), #\b garante que só pega isolada (diferente quando é no print)
-    ('Identificador', r'[A-Za-z_]\w*'), #pego de A-Z, a-z ou _, e depois o \w pega A-Z, a-z, _ ou 0-9
-    ('Operador',      r'(\+\+|--|==|!=|>=|<=|[+\-*/=])'), #operdores (\- pro - nn virar intervalo)
-    ('Separador',     r'[;,(){}\[\]\'"]'),
-    ('Espaco',        r'[ \t]+'), #espaço ou tabulação
-    ('Linha',         r'\n'),
-    ('Invalido',      r'.'),
+    ('Comentario', r'//.*|#.*'), #pego tudo na linha dps do // ou #
+    ('Literal', r'\".*?\"|\'.*?\''), #pego o minimo que tem entre aspas duplas ou simples
+    ('Identificador_Invalido', r'\b\d+[A-Za-z_]+\w*\b'),
+    ('Numero', r'\d+(\.\d+)?'),
+    ('Palavra_Reservada',  r'\b(break|case|const|continue|do|double|for|long|short|sizeof|static|struct|switch|typedef|void|return|if|else|int|float|char|string|while|printf)\b'),
+    ('Identificador', r'[A-Za-z_]\w*'),
+    ('Operador', r'(\+\+|--|==|!=|>=|<=|[+\-*/=<>])'),
+    ('Separador', r'[;,(){}\[\]\'"]'),
+    ('Espaco', r'[ \t]+'),
+    ('Linha', r'\n'),
+    ('Invalido', r'.'),
 ]
 
 expressao = '|'.join(f'(?P<{nome}>{padrao})' for nome, padrao in tokens) #junto todos os padrões em uma unica expressao
@@ -26,13 +27,15 @@ def lexico(codigo):
         if tipo == 'Numero':
             valor = float(valor) if '.' in valor else int(valor) #converto para float ou int
             yield tipo, valor #pego o tipo
+        elif tipo == 'Identificador_Invalido':
+            raise RuntimeError(f'Identificador inválido {valor!r} na linha {linha}')
         elif tipo in {'Identificador', 'Palavra_Reservada', 'Operador', 'Separador', 'Literal', 'Comentario'}:
-            yield tipo, valor #pego o tipo
-        elif tipo == 'Linha': #se for \n adiciono +1 linha na contagem de linhas
+            yield tipo, valor
+        elif tipo == 'Linha':
             linha += 1
-        elif tipo == 'Espaco': #se for espaço apenas ignoro
+        elif tipo == 'Espaco':
             pass
-        elif tipo == 'Invalido': #se for caractere invalido printo erro
+        elif tipo == 'Invalido':
             raise RuntimeError(f'Caractere inesperado {valor!r} na linha {linha}')
         posicao = match.end() #movo a posicao pro fim do token lido
         match = recebe_token(codigo, posicao) #vou tentar o match no proximo
