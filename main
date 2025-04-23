@@ -10,7 +10,7 @@ tokens = [
     ('Separador',     r'[;,(){}\[\]\'"]'),
     ('Espaco',        r'[ \t]+'), #espaço ou tabulação
     ('Linha',         r'\n'),
-    ('Inavlido',      r'.'),
+    ('Invalido',      r'.'),
 ]
 
 expressao = '|'.join(f'(?P<{nome}>{padrao})' for nome, padrao in tokens) #junto todos os padrões em uma unica expressao
@@ -32,7 +32,7 @@ def lexico(codigo):
             linha += 1
         elif tipo == 'Espaco': #se for espaço apenas ignoro
             pass
-        elif tipo == 'Inavlido': #se for caractere invalido printo erro
+        elif tipo == 'Invalido': #se for caractere invalido printo erro
             raise RuntimeError(f'Caractere inesperado {valor!r} na linha {linha}')
         posicao = match.end() #movo a posicao pro fim do token lido
         match = recebe_token(codigo, posicao) #vou tentar o match no proximo
