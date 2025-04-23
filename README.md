@@ -54,4 +54,5 @@ Saída:
 ('Identificador', 'd')
 ('Separador', ')')
 ('Separador', ';')
+
 ---
