@@ -1,0 +1,48 @@
+import re
+
+tokens = [
+    ('Comentario',    r'//.*|#.*'), #pego tudo na linha dps do // ou #
+    ('Literal',       r'\".*?\"|\'.*?\''), #pego o minimo que tem entre aspas duplas ou simples
+    ('Numero',        r'\d+(\.\d+)?'), #inteiro ou com casa decimal '()'
+    ('Palavra_Reservada',  r'\b(break|case|const|continue|do|double|for|long|short|sizeof|static|struct|switch|typedef|void|return|if|else|int|float|char|string|while|printf)\b'), #\b garante que só pega isolada (diferente quando é no print)
+    ('Identificador', r'[A-Za-z_]\w*'), #pego de A-Z, a-z ou _, e depois o \w pega A-Z, a-z, _ ou 0-9
+    ('Operador',      r'(\+\+|--|==|!=|>=|<=|[+\-*/=])'), #operdores (\- pro - nn virar intervalo)
+    ('Separador',     r'[;,(){}\[\]\'"]'),
+    ('Espaco',        r'[ \t]+'), #espaço ou tabulação
+    ('Linha',         r'\n'),
+    ('Inavlido',      r'.'),
+]
+
+expressao = '|'.join(f'(?P<{nome}>{padrao})' for nome, padrao in tokens) #junto todos os padrões em uma unica expressao
+recebe_token = re.compile(expressao).match #verifico o match
+
+def lexico(codigo):
+    posicao = 0
+    linha = 1
+    match = recebe_token(codigo, posicao)
+    while match:
+        tipo = match.lastgroup #tipo do token (nome, numero, separador, etc...)
+        valor = match.group() #valor (int, 25, =, ;, etc...)
+        if tipo == 'Numero':
+            valor = float(valor) if '.' in valor else int(valor) #converto para float ou int
+            yield tipo, valor #pego o tipo
+        elif tipo in {'Identificador', 'Palavra_Reservada', 'Operador', 'Separador', 'Literal', 'Comentario'}:
+            yield tipo, valor #pego o tipo
+        elif tipo == 'Linha': #se for \n adiciono +1 linha na contagem de linhas
+            linha += 1
+        elif tipo == 'Espaco': #se for espaço apenas ignoro
+            pass
+        elif tipo == 'Inavlido': #se for caractere invalido printo erro
+            raise RuntimeError(f'Caractere inesperado {valor!r} na linha {linha}')
+        posicao = match.end() #movo a posicao pro fim do token lido
+        match = recebe_token(codigo, posicao) #vou tentar o match no proximo
+    if posicao != len(codigo): #se nn tiver no fim = erro
+        raise RuntimeError(f'Erro de análise na linha: {linha}')
+
+def analisar_arquivo(nome_arquivo):
+    with open(nome_arquivo, 'r') as arquivo:
+        conteudo = arquivo.read()
+        for token in lexico(conteudo):
+            print(token)
+
+analisar_arquivo('codigo.txt')
