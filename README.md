@@ -23,11 +23,13 @@ O analisador percorre o código-fonte caractere por caractere usando expressões
 ---
 
 Exemplo de entrada:
+
 int a = 10;
 int c = a + 5; // soma a+5
 printf("c = %d", d);
 
 Saída:
+
 ('Palavra_Reservada', 'int')
 ('Identificador', 'a')
 ('Operador', '=')
