@@ -20,3 +20,38 @@ O analisador percorre o código-fonte caractere por caractere usando expressões
 1. Certifique-se de ter Python 3 instalado.
 2. Crie um arquivo com o código-fonte que você quer analisar (por exemplo: `codigo.txt`).
 3. Execute o script: python analisador.py
+---
+
+Exemplo de entrada:
+int a = 10;
+int b = 20;
+int c = a + b; // soma a + b
+printf("c = %d", d);
+
+Saída:
+('Palavra_Reservada', 'int')
+('Identificador', 'a')
+('Operador', '=')
+('Numero', 10)
+('Separador', ';')
+('Palavra_Reservada', 'int')
+('Identificador', 'b')
+('Operador', '=')
+('Numero', 20)
+('Separador', ';')
+('Palavra_Reservada', 'int')
+('Identificador', 'c')
+('Operador', '=')
+('Identificador', 'a')
+('Operador', '+')
+('Identificador', 'b')
+('Separador', ';')
+('Comentario', '// soma a + b')
+('Palavra_Reservada', 'printf')
+('Separador', '(')
+('Literal', '"c = %d"')
+('Separador', ',')
+('Identificador', 'd')
+('Separador', ')')
+('Separador', ';')
+---
