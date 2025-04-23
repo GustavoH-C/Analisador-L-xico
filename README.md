@@ -24,8 +24,7 @@ O analisador percorre o código-fonte caractere por caractere usando expressões
 
 Exemplo de entrada:
 int a = 10;
-int b = 20;
-int c = a + b; // soma a + b
+int c = a + 5; // soma a+5
 printf("c = %d", d);
 
 Saída:
@@ -35,18 +34,13 @@ Saída:
 ('Numero', 10)
 ('Separador', ';')
 ('Palavra_Reservada', 'int')
-('Identificador', 'b')
-('Operador', '=')
-('Numero', 20)
-('Separador', ';')
-('Palavra_Reservada', 'int')
 ('Identificador', 'c')
 ('Operador', '=')
 ('Identificador', 'a')
 ('Operador', '+')
-('Identificador', 'b')
+('Numero', 5)
 ('Separador', ';')
-('Comentario', '// soma a + b')
+('Comentario', '// soma a+5')
 ('Palavra_Reservada', 'printf')
 ('Separador', '(')
 ('Literal', '"c = %d"')
